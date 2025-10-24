@@ -13,31 +13,38 @@ import { v2 as cloudinary } from "cloudinary";
 
 dotenv.config();
 
-
 cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  });
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
-  cloudinary.api
+cloudinary.api
   .ping()
   .then(() => console.log("✅ Cloudinary connected successfully!"))
-  .catch((err) => console.error("❌ Cloudinary connection failed:", err.message));
-
-
+  .catch((err) =>
+    console.error("❌ Cloudinary connection failed:", err.message)
+  );
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+
+// 💡 مصفوفة النطاقات المسموح بها (Origins)
+const allowedOrigins = [
+  "http://localhost:5174", // للبيئة المحلية (التطوير)
+  "https://restaurant-five-jet.vercel.app", // ✅ الواجهة الأمامية المنشورة
+];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins, // تم استخدام المصفوفة للسماح بكلا النطاقين
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
 connectDB();
 
 app.use("/users", userRoutes);
@@ -51,7 +58,6 @@ app.use("/images", express.static("images"));
 app.get("/", (req, res) => {
   res.send("✅ Server is running successfully!");
 });
-
 
 const PORT = process.env.PORT || 5000;
 
