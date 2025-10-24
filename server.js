@@ -38,10 +38,17 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: allowedOrigins, // تم استخدام المصفوفة للسماح بكلا النطاقين
+    origin: allowedOrigins,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // 🔑 التعديل هنا: إضافة المزيد من الرؤوس الافتراضية المطلوبة للتوافق
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept", // إضافة رؤوس شائعة
+    ],
+    // 🔑 إضافة هذا الإعداد لتحسين التعامل مع طلبات OPTIONS
+    optionsSuccessStatus: 200,
   })
 );
 
